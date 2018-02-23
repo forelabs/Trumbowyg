@@ -1325,7 +1325,10 @@ Object.defineProperty(jQuery.trumbowyg, 'defaultOptions', {
         // Open a modal box
         openModal: function (title, content) {
             var t = this,
-                prefix = t.o.prefix;
+                prefix = t.o.prefix,
+                top = t.$btnPane.height(),
+                selection = t.doc.getSelection(),
+                focusNode = selection.focusNode;
 
             // No open a modal box when exist other modal box
             if ($('.' + prefix + 'modal-box', t.$box).length > 0) {
@@ -1341,11 +1344,23 @@ Object.defineProperty(jQuery.trumbowyg, 'defaultOptions', {
             // Disable all btnPane btns
             t.$btnPane.addClass(prefix + 'disable');
 
+            if(!selection.isCollapsed && focusNode) {
+              // position of text node can't be fetched, select parent instead
+              if(focusNode.nodeType == Node.TEXT_NODE) {
+                focusNode = focusNode.parentNode;
+              }
+
+              top = Math.max(
+                t.$btnPane.height(),
+                $(focusNode).position().top - i.$ed.position().top
+              );
+            }
+
             // Build out of ModalBox, it's the mask for animations
             var $modal = $('<div/>', {
                 class: prefix + 'modal ' + prefix + 'fixed-top'
             }).css({
-                top: t.$btnPane.height()
+                top: top
             }).appendTo(t.$box);
 
             // Click on overlay close modal by cancelling them
