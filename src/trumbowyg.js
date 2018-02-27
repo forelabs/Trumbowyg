@@ -1176,7 +1176,7 @@ Object.defineProperty(jQuery.trumbowyg, 'defaultOptions', {
             var t = this,
                 documentSelection = t.doc.getSelection(),
                 node = documentSelection.focusNode,
-                text = new XMLSerializer().serializeToString(documentSelection.getRangeAt(0).cloneContents()),
+                text = undefined,
                 url,
                 title,
                 target;
@@ -1198,7 +1198,6 @@ Object.defineProperty(jQuery.trumbowyg, 'defaultOptions', {
             }
 
             t.saveRange();
-
             t.openModalInsert(t.lang.createLink, {
                 url: {
                     label: 'URL',
@@ -1211,7 +1210,7 @@ Object.defineProperty(jQuery.trumbowyg, 'defaultOptions', {
                 },
                 text: {
                     label: t.lang.text,
-                    value: text
+                    value: text || (new XMLSerializer().serializeToString(documentSelection.getRangeAt(0).cloneContents()))
                 },
                 target: {
                     label: t.lang.target,
